@@ -67,6 +67,419 @@
         </div>
     </div>
 
+    <!-- Profile Pages Container (loaded dynamically) -->
+    <div id="profile-page-container" style="display: none;"></div>
+
+    <!-- Recruiter Page (Legacy - will be removed) -->
+    <div id="recruiter-page" style="display: none;">
+        <nav id="recruiter-navbar" class="recruiter-navbar">
+            <div class="logo" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" style="cursor: pointer;">Shashwat Raj</div>
+            <ul class="nav-links">
+                <li><a href="#recruiter-about">About</a></li>
+                <li><a href="#recruiter-experience">Experience</a></li>
+                <li><a href="#recruiter-skills">Skills</a></li>
+                <li><a href="#recruiter-education">Education</a></li>
+                <li><a href="#recruiter-achievements">Achievements</a></li>
+                <li><a href="#recruiter-contact">Contact</a></li>
+            </ul>
+            <div class="nav-cta">
+                <button class="btn btn-resume" onclick="downloadResume()">
+                    <i class="fas fa-download"></i> Resume
+                </button>
+            </div>
+        </nav>
+
+        <!-- Hero Section with Key Stats -->
+        <section class="recruiter-hero">
+            <div class="recruiter-hero-content">
+                <div class="hero-badge">Available for Opportunities</div>
+                <h1 class="recruiter-hero-title">Shashwat Raj</h1>
+                <p class="recruiter-hero-subtitle">AI Engineer | IIT Delhi | Building Scalable AI Systems</p>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">3+</div>
+                        <div class="stat-label">Years Experience</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">10-15x</div>
+                        <div class="stat-label">Production Impact</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">95%</div>
+                        <div class="stat-label">Cost Reduction</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">IIT</div>
+                        <div class="stat-label">Delhi Graduate</div>
+                    </div>
+                </div>
+                <div class="hero-cta-buttons">
+                    <button class="btn btn-primary-cta" onclick="scheduleInterview()">
+                        <i class="fas fa-calendar-check"></i> Schedule Interview
+                    </button>
+                    <button class="btn btn-secondary-cta" onclick="downloadResume()">
+                        <i class="fas fa-file-pdf"></i> Download Resume
+                    </button>
+                    <button class="btn btn-info-cta" onclick="window.open('https://linkedin.com/in/shashwatraj-iitd', '_blank')">
+                        <i class="fab fa-linkedin"></i> LinkedIn
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Highlights Row -->
+        <section class="recruiter-highlights">
+            <h2 class="recruiter-section-title">Top Highlights</h2>
+            <div class="highlights-row">
+                <div class="highlight-card">
+                    <div class="highlight-icon"><i class="fas fa-rocket"></i></div>
+                    <h3>GenAI Innovation</h3>
+                    <p>Built multi-agent system accelerating creative production by 10-15x</p>
+                </div>
+                <div class="highlight-card">
+                    <div class="highlight-icon"><i class="fas fa-chart-line"></i></div>
+                    <h3>Revenue Forecasting</h3>
+                    <p>Improved ad revenue prediction accuracy by 8% with real-time systems</p>
+                </div>
+                <div class="highlight-card">
+                    <div class="highlight-icon"><i class="fas fa-graduation-cap"></i></div>
+                    <h3>IIT Delhi</h3>
+                    <p>B.Tech Mathematics & Computing from India's premier institute</p>
+                </div>
+                <div class="highlight-card">
+                    <div class="highlight-icon"><i class="fas fa-trophy"></i></div>
+                    <h3>Top Performer</h3>
+                    <p>99.89 percentile in JEE Advanced among 1M+ candidates</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="recruiter-about" class="recruiter-section">
+            <h2 class="recruiter-section-title">ABOUT</h2>
+            <div class="section-divider"></div>
+            <div class="about-content">
+                <p class="about-text">
+                    AI Engineer with strong foundation in Mathematics & Computer Science from IIT Delhi, 
+                    passionate about building scalable AI systems & eager to develop business-focused software solutions.
+                </p>
+            </div>
+        </section>
+
+        <!-- Experience Section -->
+        <section id="recruiter-experience" class="recruiter-section">
+            <h2 class="recruiter-section-title">EXPERIENCE</h2>
+            <div class="section-divider"></div>
+            
+            <!-- Current Role -->
+            <div class="experience-card featured">
+                <div class="experience-header">
+                    <div class="experience-title-group">
+                        <h3 class="experience-role">AI Engineer (Leadership Associate)</h3>
+                        <h4 class="experience-company">Purplle.com (Manash Lifestyle Pvt. Ltd.)</h4>
+                    </div>
+                    <div class="experience-meta">
+                        <span class="experience-date"><i class="far fa-calendar"></i> May 2025 - Ongoing</span>
+                        <span class="experience-location"><i class="fas fa-map-marker-alt"></i> Mumbai, India</span>
+                    </div>
+                </div>
+                <div class="experience-project">
+                    <h4 class="project-title">GenAI Ad Creative Automation System</h4>
+                    <div class="project-description">
+                        <p>Designed and developed an AI system comprising multiple agents:</p>
+                        <ul class="project-features">
+                            <li><strong>Ideator Multi-Agent System:</strong> Generates thousands of marketing directions and ad concepts autonomously</li>
+                            <li><strong>Generator Multi-Agent System:</strong> Transforms ideas into high-fidelity static creatives using orchestration of multiple GenAI agents</li>
+                            <li><strong>Moderator Multi-Agent System:</strong> Filters and ranks outputs to ensure brand consistency and quality using Vision agents</li>
+                        </ul>
+                    </div>
+                    <div class="project-impact">
+                        <h5>Impact:</h5>
+                        <div class="impact-grid">
+                            <div class="impact-item">
+                                <span class="impact-value">10-15x</span>
+                                <span class="impact-label">Faster Production</span>
+                            </div>
+                            <div class="impact-item">
+                                <span class="impact-value">2-3 weeks → 3 hours</span>
+                                <span class="impact-label">TAT Reduction</span>
+                            </div>
+                            <div class="impact-item">
+                                <span class="impact-value">95%</span>
+                                <span class="impact-label">Cost Reduction</span>
+                            </div>
+                            <div class="impact-item">
+                                <span class="impact-value">3-4x</span>
+                                <span class="impact-label">More Variants</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tech-stack">
+                        <h5>Technology Stack:</h5>
+                        <div class="tech-tags">
+                            <span class="tech-tag"><img src="assets/icons/Tools/openai.png" alt="OpenAI"> OpenAI</span>
+                            <span class="tech-tag"><img src="assets/icons/Tools/vertexai.png" alt="Gemini"> Gemini</span>
+                            <span class="tech-tag">Stable Diffusion</span>
+                            <span class="tech-tag">LLMs/VLMs</span>
+                            <span class="tech-tag">Vision Systems</span>
+                            <span class="tech-tag">Microservices</span>
+                            <span class="tech-tag">MLOps</span>
+                            <span class="tech-tag">Orchestration</span>
+                        </div>
+                    </div>
+                    <div class="project-status">
+                        <span class="status-badge in-progress">Next Phase: Integrating data-driven feedback loop for revenue optimization</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Internship Experience -->
+            <div class="experience-card">
+                <div class="experience-header">
+                    <div class="experience-title-group">
+                        <h3 class="experience-role">Software Developer - (ML & Infrastructure)</h3>
+                        <h4 class="experience-company">Samsung R&D</h4>
+                    </div>
+                    <div class="experience-meta">
+                        <span class="experience-date"><i class="far fa-calendar"></i> May 2024 – July 2024</span>
+                        <span class="experience-location"><i class="fas fa-map-marker-alt"></i> Bangalore, India</span>
+                    </div>
+                </div>
+                <div class="experience-project">
+                    <h4 class="project-title">Real-Time Revenue Forecasting and Anomaly Detection System</h4>
+                    <div class="project-description">
+                        <ul class="project-features">
+                            <li>Developed a real-time forecasting and anomaly detection system for Samsung Ads, combining forecasting models (Linear + transformer) with distributed stream processing (Kafka) and scalable cloud deployment</li>
+                            <li><strong>Impact:</strong> Improved ad revenue prediction accuracy by 8%, enabled rapid anomaly flagging, and reduced system latency for production-scale data ingestion and inference</li>
+                        </ul>
+                    </div>
+                    <div class="tech-stack">
+                        <h5>Technology Stack:</h5>
+                        <div class="tech-tags">
+                            <span class="tech-tag"><img src="assets/icons/languages/python.png" alt="Python"> Python</span>
+                            <span class="tech-tag"><img src="assets/icons/Frameworks/pytorch.png" alt="PyTorch"> PyTorch</span>
+                            <span class="tech-tag"><img src="assets/icons/Platforms/Kafka.png" alt="Kafka"> Apache Kafka</span>
+                            <span class="tech-tag"><img src="assets/icons/Tools/aws.png" alt="AWS"> AWS</span>
+                            <span class="tech-tag">Big Data Frameworks</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Personal Project -->
+            <div class="experience-card personal-project">
+                <div class="experience-header">
+                    <div class="experience-title-group">
+                        <h3 class="experience-role">Personal Project - Personalized AI Health Assistant</h3>
+                        <span class="project-badge">Self-Developed</span>
+                    </div>
+                    <div class="experience-meta">
+                        <span class="experience-date"><i class="far fa-calendar"></i> 2025</span>
+                        <span class="experience-location"><i class="fas fa-map-marker-alt"></i> India</span>
+                    </div>
+                </div>
+                <div class="experience-project">
+                    <div class="project-description">
+                        <ul class="project-features">
+                            <li>Built a personalized health assistant using WhatsApp as chat interface and Gemini at backend</li>
+                            <li>Integrated with iOS HealthApp and a custom database to track meals, calorie intake, macro breakdown, and workout history in real time</li>
+                            <li>Enabled food logging via text or images; Gemini estimated calories, nutrition, and health suitability using vision capabilities</li>
+                            <li>Designed dynamic diet tracking and professional health advice system personalized to user goals (e.g., weight loss, muscle gain)</li>
+                        </ul>
+                    </div>
+                    <div class="tech-stack">
+                        <h5>Technology Stack:</h5>
+                        <div class="tech-tags">
+                            <span class="tech-tag"><img src="assets/icons/Tools/vertexai.png" alt="Gemini"> Gemini</span>
+                            <span class="tech-tag">WhatsApp API</span>
+                            <span class="tech-tag">iOS HealthKit</span>
+                            <span class="tech-tag">Vision AI</span>
+                            <span class="tech-tag">Database Systems</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technical Skills Section -->
+        <section id="recruiter-skills" class="recruiter-section">
+            <h2 class="recruiter-section-title">TECHNICAL SKILLS</h2>
+            <div class="section-divider"></div>
+            <div class="skills-container">
+                <div class="skill-category-recruiter">
+                    <h3 class="skill-category-title">Languages</h3>
+                    <div class="skill-tags-recruiter">
+                        <span class="skill-tag-recruiter"><img src="assets/icons/languages/python.png" alt="Python"> Python</span>
+                        <span class="skill-tag-recruiter"><img src="assets/icons/languages/C++.png" alt="C++"> C/C++</span>
+                        <span class="skill-tag-recruiter"><img src="assets/icons/languages/Java.png" alt="Java"> Java</span>
+                        <span class="skill-tag-recruiter"><img src="assets/icons/languages/JS.png" alt="JavaScript"> JavaScript</span>
+                        <span class="skill-tag-recruiter"><img src="assets/icons/languages/SQL.png" alt="SQL"> SQL</span>
+                        <span class="skill-tag-recruiter"><img src="assets/icons/languages/TS.png" alt="TypeScript"> HTML/CSS</span>
+                        <span class="skill-tag-recruiter">YAML/JSON</span>
+                    </div>
+                </div>
+                <div class="skill-category-recruiter">
+                    <h3 class="skill-category-title">Frameworks & Libraries</h3>
+                    <div class="skill-tags-recruiter">
+                        <span class="skill-tag-recruiter"><img src="assets/icons/Frameworks/Numpy.png" alt="NumPy"> NumPy</span>
+                        <span class="skill-tag-recruiter">Pandas</span>
+                        <span class="skill-tag-recruiter">Scikit-learn</span>
+                        <span class="skill-tag-recruiter"><img src="assets/icons/Frameworks/tensorflow.png" alt="TensorFlow"> TensorFlow</span>
+                        <span class="skill-tag-recruiter"><img src="assets/icons/Frameworks/keras.png" alt="Keras"> Keras</span>
+                        <span class="skill-tag-recruiter"><img src="assets/icons/Frameworks/pytorch.png" alt="PyTorch"> PyTorch</span>
+                        <span class="skill-tag-recruiter"><img src="assets/icons/Tools/huggingface.png" alt="Hugging Face"> Hugging Face</span>
+                    </div>
+                </div>
+                <div class="skill-category-recruiter">
+                    <h3 class="skill-category-title">Tools & Platforms</h3>
+                    <div class="skill-tags-recruiter">
+                        <span class="skill-tag-recruiter"><img src="assets/icons/Platforms/Kafka.png" alt="Kafka"> Apache Kafka</span>
+                        <span class="skill-tag-recruiter">Pinecone</span>
+                        <span class="skill-tag-recruiter">Docker</span>
+                        <span class="skill-tag-recruiter">Kubernetes</span>
+                        <span class="skill-tag-recruiter"><img src="assets/icons/Tools/aws.png" alt="AWS"> AWS</span>
+                        <span class="skill-tag-recruiter">S3/Lambda</span>
+                        <span class="skill-tag-recruiter">MATLAB</span>
+                        <span class="skill-tag-recruiter">Tableau</span>
+                        <span class="skill-tag-recruiter">Airflow</span>
+                        <span class="skill-tag-recruiter"><img src="assets/icons/Platforms/Github.png" alt="GitHub"> Git/GitHub</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Education Section -->
+        <section id="recruiter-education" class="recruiter-section">
+            <h2 class="recruiter-section-title">EDUCATION</h2>
+            <div class="section-divider"></div>
+            <div class="education-container">
+                <div class="education-card">
+                    <div class="education-header">
+                        <h3 class="education-degree">B.Tech. in Mathematics & Computing</h3>
+                        <h4 class="education-institution">Indian Institute of Technology, Delhi</h4>
+                    </div>
+                    <div class="education-meta">
+                        <span class="education-date"><i class="far fa-calendar"></i> Oct 2021 - May 2025</span>
+                        <span class="education-grade">Grade: 70%</span>
+                    </div>
+                </div>
+                <div class="education-divider"></div>
+                <div class="education-card">
+                    <div class="education-header">
+                        <h3 class="education-degree">High School (Grade 12)</h3>
+                        <h4 class="education-institution">Stephens International Public School</h4>
+                    </div>
+                    <div class="education-meta">
+                        <span class="education-date"><i class="far fa-calendar"></i> March 2019 - May 2021</span>
+                        <span class="education-grade">Grade: 95%</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Achievements Section -->
+        <section id="recruiter-achievements" class="recruiter-section">
+            <h2 class="recruiter-section-title">ACHIEVEMENTS</h2>
+            <div class="section-divider"></div>
+            <div class="achievements-container">
+                <div class="achievement-card">
+                    <div class="achievement-icon"><i class="fas fa-trophy"></i></div>
+                    <div class="achievement-content">
+                        <h3 class="achievement-title">JEE Advanced & Mains 2021</h3>
+                        <p class="achievement-description">Secured 99.89 percentile nationwide among 1M+ candidates</p>
+                    </div>
+                </div>
+                <div class="achievement-divider"></div>
+                <div class="achievement-card">
+                    <div class="achievement-icon"><i class="fas fa-star"></i></div>
+                    <div class="achievement-content">
+                        <h3 class="achievement-title">NTSE Scholar 2019</h3>
+                        <p class="achievement-description">Awarded National Talent Scholarship among 1 million students</p>
+                    </div>
+                </div>
+                <div class="achievement-divider"></div>
+                <div class="achievement-card">
+                    <div class="achievement-icon"><i class="fas fa-flask"></i></div>
+                    <div class="achievement-content">
+                        <h3 class="achievement-title">Samsung SWC Test</h3>
+                        <p class="achievement-description">Qualified Samsung's Advanced Software Competency Test on first attempt</p>
+                    </div>
+                </div>
+                <div class="achievement-divider"></div>
+                <div class="achievement-card">
+                    <div class="achievement-icon"><i class="fas fa-medal"></i></div>
+                    <div class="achievement-content">
+                        <h3 class="achievement-title">Regional Mathematical Olympiad</h3>
+                        <p class="achievement-description">Received certificate of merit twice for mathematical excellence</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="recruiter-contact" class="recruiter-section recruiter-contact-section">
+            <h2 class="recruiter-section-title">LET'S CONNECT</h2>
+            <div class="section-divider"></div>
+            <div class="contact-content">
+                <p class="contact-subtitle">Ready to build something amazing together?</p>
+                <div class="contact-cta-buttons">
+                    <button class="btn btn-primary-cta" onclick="scheduleInterview()">
+                        <i class="fas fa-calendar-check"></i> Schedule Interview
+                    </button>
+                    <button class="btn btn-secondary-cta" onclick="downloadResume()">
+                        <i class="fas fa-file-pdf"></i> Download Resume
+                    </button>
+                    <button class="btn btn-info-cta" onclick="window.location.href='mailto:rajshashwatiitd@gmail.com'">
+                        <i class="fas fa-envelope"></i> Email Me
+                    </button>
+                </div>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fab fa-linkedin"></i>
+                        <span>linkedin.com/in/shashwatraj-iitd</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fab fa-github"></i>
+                        <span>github.com/Shaz-gif</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Mumbai, Maharashtra, India</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>rajshashwatiitd@gmail.com</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="recruiter-footer">
+            <p>&copy; 2025 Shashwat Raj. Professional Portfolio.</p>
+        </footer>
+    </div>
+
+    <!-- Developer Page (Placeholder) -->
+    <div id="developer-page" style="display: none;">
+        <div style="padding: 100px; text-align: center;">
+            <h1>Developer Page - Coming Soon</h1>
+        </div>
+    </div>
+
+    <!-- Stalker Page (Placeholder) -->
+    <div id="stalker-page" style="display: none;">
+        <div style="padding: 100px; text-align: center;">
+            <h1>Stalker Page - Coming Soon</h1>
+        </div>
+    </div>
+
+    <!-- Adventurer Page (Placeholder) -->
+    <div id="adventurer-page" style="display: none;">
+        <div style="padding: 100px; text-align: center;">
+            <h1>Adventurer Page - Coming Soon</h1>
+        </div>
+    </div>
+
     <div id="main-app" style="display: none;">
         <nav id="navbar">
             <div class="logo">Shashwat Raj</div>
@@ -313,7 +726,7 @@
 
         <section id="hire-me" style="text-align: center; padding-bottom: 100px;">
             <h2 class="section-title">Get In Touch</h2>
-            <p style="font-size: 1.5rem; color: #ccc;">Looking for a scalable AI solution?</p>
+            <p style="font-size: 1.5rem; color: #FFFFFF;">Looking for a scalable AI solution?</p>
             <div style="margin-top: 30px;">
                 <button class="btn btn-play" style="margin: 0 auto;"
                     onclick="window.location.href='mailto:rajshashwatiitd@gmail.com'">Email Shashwat</button>
