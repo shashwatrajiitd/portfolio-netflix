@@ -47,13 +47,17 @@ function createArchedText(element) {
         span.style.transition = 'transform 0.3s ease';
         
         // Calculate arch position (convex curve: center higher, ends lower)
-        const totalLetters = letters.filter(l => l !== ' ').length;
-        const letterIndex = letters.slice(0, index + 1).filter(l => l !== ' ').length;
-        const normalizedPosition = (letterIndex - 1) / (totalLetters - 1 || 1); // 0 to 1
-        const archHeight = Math.sin(normalizedPosition * Math.PI) * 8; // 8px max arch height
-        
-        span.style.transform = `translateY(${-archHeight}px)`;
-        span.style.transformOrigin = 'center bottom';
+        // Only apply arch to non-space characters
+        if (letter !== ' ') {
+            const totalLetters = letters.filter(l => l !== ' ').length;
+            const letterIndex = letters.slice(0, index + 1).filter(l => l !== ' ').length;
+            const normalizedPosition = (letterIndex - 1) / (totalLetters - 1 || 1); // 0 to 1
+            // Use sine wave for smooth convex arch - center peaks, ends are lower
+            const archHeight = Math.sin(normalizedPosition * Math.PI) * 6; // 6px max arch height for subtle effect
+            
+            span.style.transform = `translateY(${-archHeight}px)`;
+            span.style.transformOrigin = 'center bottom';
+        }
         
         element.appendChild(span);
     });
