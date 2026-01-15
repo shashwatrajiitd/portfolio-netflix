@@ -1213,7 +1213,118 @@ button.btn-primary-cta {
         font-size: 1rem;
     }
     
+    .developer-navbar {
+        padding: 1rem 2%;
+        justify-content: space-between;
+        gap: 0.5rem;
+    }
+    
+    .developer-navbar .logo,
+    #developer-navbar .logo,
+    #developer-page .developer-navbar .logo {
+        margin-left: 0;
+        margin-right: 0;
+        flex-shrink: 1;
+        min-width: 0;
+        max-width: calc(100% - 120px);
+    }
+    
+    .developer-navbar .logo img,
+    #developer-navbar .logo img,
+    #developer-page .developer-navbar .logo img {
+        max-width: 100%;
+        width: auto;
+        height: 28px;
+        object-fit: contain;
+    }
+    
+    .mobile-menu-toggle {
+        flex-shrink: 0;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 0.5rem;
+        margin-right: 0.5rem;
+        padding: 0;
+        background: transparent;
+        border: none;
+        color: var(--netflix-white);
+        cursor: pointer;
+        z-index: 1001;
+    }
+    
+    .mobile-menu-toggle i {
+        font-size: 1.2rem;
+    }
+    
     .developer-navbar .nav-links {
+        display: none;
+    }
+    
+    .navbar-right {
+        gap: 0.5rem;
+        flex-shrink: 0;
+        margin-left: auto;
+    }
+    
+    .profile-tile {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .profile-dropdown {
+        right: 0;
+        min-width: 180px;
+    }
+}
+
+/* Extra small mobile devices (iPhone 12 Pro, etc.) */
+@media screen and (max-width: 430px) {
+    .developer-navbar {
+        padding: 0.75rem 3%;
+    }
+    
+    .developer-navbar .logo,
+    #developer-navbar .logo,
+    #developer-page .developer-navbar .logo {
+        max-width: calc(100% - 140px);
+    }
+    
+    .developer-navbar .logo img,
+    #developer-navbar .logo img,
+    #developer-page .developer-navbar .logo img {
+        height: 24px;
+        max-width: 100%;
+    }
+    
+    .mobile-menu-toggle {
+        width: 28px;
+        height: 28px;
+        margin-left: 0.25rem;
+        margin-right: 0.25rem;
+    }
+    
+    .mobile-menu-toggle i {
+        font-size: 1rem;
+    }
+    
+    .navbar-right {
+        gap: 0.25rem;
+    }
+    
+    .profile-tile {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .btn-resume {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+    }
+    
+    .btn-resume .resume-text {
         display: none;
     }
     
