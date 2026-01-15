@@ -12,24 +12,10 @@
 <body>
     <div class="aura-glow"></div>
 
-    <div id="start-overlay" onclick="startExperience()">
-        <button class="btn btn-play ripple">
-            <img src="assets/gifs/click.gif" alt="Click to Experience" style="width: 150px; height: auto;">
-        </button>
-    </div>
 
     <div id="splash-screen" style="display: none;">
         <div class="netflix-intro-container">
-            <svg class="netflix-logo-svg" viewBox="0 0 1000 600">
-                <defs>
-                    <path id="curve-path" d="M 100,450 Q 500,150 900,450" />
-                </defs>
-                <text class="curved-text">
-                    <textPath xlink:href="#curve-path" startOffset="50%" text-anchor="middle">
-                        SHASHWAT RAJ
-                    </textPath>
-                </text>
-            </svg>
+            <img src="assets/logo.png" alt="Shashwat Raj" class="netflix-logo-img">
             <div class="spectrum-container">
                 <!-- Spectrum lines will be generated here -->
             </div>
@@ -73,7 +59,9 @@
     <!-- Recruiter Page (Legacy - will be removed) -->
     <div id="recruiter-page" style="display: none;">
         <nav id="recruiter-navbar" class="recruiter-navbar">
-            <div class="logo" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" style="cursor: pointer;">Shashwat Raj</div>
+            <div class="logo" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" style="cursor: pointer;">
+                <img src="assets/logo.png" alt="Shashwat Raj" class="navbar-logo">
+            </div>
             <ul class="nav-links">
                 <li><a href="#recruiter-about">About</a></li>
                 <li><a href="#recruiter-experience">Experience</a></li>
@@ -482,7 +470,9 @@
 
     <div id="main-app" style="display: none;">
         <nav id="navbar">
-            <div class="logo">Shashwat Raj</div>
+            <div class="logo">
+                <img src="assets/logo.png" alt="Shashwat Raj" class="navbar-logo">
+            </div>
             <ul class="nav-links">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#professional">Experience</a></li>

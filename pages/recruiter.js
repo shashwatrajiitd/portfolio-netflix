@@ -23,6 +23,12 @@ function scheduleInterview() {
 }
 
 function scrollToSection(sectionId) {
+    // Push to history if HistoryManager is available
+    if (typeof HistoryManager !== 'undefined' && !HistoryManager.isNavigating) {
+        const currentProfile = 'Recruiter';
+        HistoryManager.pushState('section', currentProfile, sectionId);
+    }
+    
     const target = document.getElementById(sectionId);
     if (target) {
         const offsetTop = target.offsetTop - 80; // Account for fixed navbar
@@ -68,21 +74,28 @@ function initializeRecruiterPage() {
     const recruiterNavbar = document.getElementById('recruiter-navbar');
     if (recruiterNavbar) {
         window.addEventListener('scroll', () => {
+            // Check if scrolled past threshold
             if (window.scrollY > 50) {
                 recruiterNavbar.classList.add('scrolled');
+                recruiterNavbar.classList.add('scrolling-up');
             } else {
                 recruiterNavbar.classList.remove('scrolled');
+                recruiterNavbar.classList.remove('scrolling-up');
             }
         });
     }
     
-    // Create arched text effect for logo
+    // Create arched text effect for logo (only if logo contains text, not an image)
     const logo = document.querySelector('#recruiter-navbar .logo');
     if (logo) {
-        createArchedText(logo);
+        // Only apply arched text if logo doesn't contain an image
+        const logoImg = logo.querySelector('img');
+        if (!logoImg) {
+            createArchedText(logo);
+        }
     }
     
-    // Smooth scroll for anchor links
+    // Smooth scroll for anchor links with history support
     const recruiterLinks = document.querySelectorAll('#recruiter-page a[href^="#"], .instagram-main a[href^="#"]');
     recruiterLinks.forEach(link => {
         link.addEventListener('click', function(e) {
@@ -91,6 +104,14 @@ function initializeRecruiterPage() {
             scrollToSection(targetId);
         });
     });
+    
+    // Handle initial URL hash if present
+    if (window.location.hash) {
+        const hash = window.location.hash.substring(1);
+        setTimeout(() => {
+            scrollToSection(hash);
+        }, 500);
+    }
     
     // Load background video carousel
     initializeVideoCarousel('recruiter_profile');

@@ -65,6 +65,12 @@
     box-shadow: none;
 }
 
+.recruiter-navbar.scrolling-up {
+    background-color: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+}
+
 .recruiter-navbar .logo,
 #recruiter-navbar .logo,
 #recruiter-page .recruiter-navbar .logo {
@@ -88,10 +94,32 @@
     background: unset;
     border-color: rgba(0, 0, 0, 0);
     border-image: none;
+    height: 33px;
+    overflow: visible;
 }
 
 .recruiter-navbar .logo span {
     display: inline-block;
+}
+
+.recruiter-navbar .logo img,
+.recruiter-navbar .logo .navbar-logo,
+#recruiter-navbar .logo img,
+#recruiter-page .recruiter-navbar .logo img {
+    width: 202px;
+    height: 33px;
+    object-fit: contain;
+    display: block !important;
+    max-width: 202px;
+    max-height: 33px;
+    margin: 0;
+    padding: 0;
+    border: none;
+    vertical-align: middle;
+    opacity: 1 !important;
+    visibility: visible !important;
+    position: relative;
+    z-index: 1;
 }
 
 .recruiter-navbar .nav-links {
@@ -359,10 +387,11 @@ button.btn-primary-cta {
 
 .watching-cards {
     display: flex;
-    gap: 1.5rem;
+    gap: 134px;
     overflow-x: auto;
     overflow-y: hidden;
-    padding: 1rem 0;
+    padding-top: 27px;
+    padding-bottom: 1rem;
     scroll-behavior: smooth;
 }
 
@@ -392,7 +421,7 @@ button.btn-primary-cta {
 }
 
 .card-image {
-    width: 100%;
+    width: 300px;
     height: 280px;
     border-radius: 8px;
     display: flex;
@@ -410,6 +439,7 @@ button.btn-primary-cta {
 }
 
 .card-label {
+    width: 300px;
     text-align: center;
     color: #FFFFFF;
     font-weight: 600;
