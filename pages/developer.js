@@ -69,6 +69,79 @@ function createArchedText(element) {
     });
 }
 
+// Profile Selector Functions
+function toggleProfileDropdown(event) {
+    if (event) {
+        event.stopPropagation();
+    }
+    const container = document.querySelector('.profile-selector-container');
+    if (container) {
+        container.classList.toggle('active');
+    }
+}
+
+function updateCurrentProfileImage(profileName) {
+    const profileImages = {
+        'Recruiter': '../assets/icons/recruiter.png',
+        'Developer': '../assets/icons/developer.png',
+        'Stalker': '../assets/icons/stalker.png',
+        'Adventurer': '../assets/icons/adventurer.png'
+    };
+    
+    const currentProfileImg = document.getElementById('current-profile-img');
+    if (currentProfileImg && profileImages[profileName]) {
+        currentProfileImg.src = profileImages[profileName];
+        currentProfileImg.alt = profileName;
+    }
+}
+
+function initializeProfileSelector() {
+    // Set current profile image based on current page
+    const currentPage = document.getElementById('developer-page');
+    if (currentPage) {
+        updateCurrentProfileImage('Developer');
+    }
+    
+    // Wait for DOM to be ready, then set up event listeners
+    setTimeout(() => {
+        // Set up event listeners for profile dropdown items
+        const profileItems = document.querySelectorAll('.profile-dropdown-item');
+        profileItems.forEach(item => {
+            // Get profile name from data attribute or text content
+            const profileName = item.getAttribute('data-profile') || 
+                               item.querySelector('.profile-dropdown-name')?.textContent.trim();
+            
+            if (profileName) {
+                // Remove any existing listeners by cloning
+                const newItem = item.cloneNode(true);
+                item.parentNode.replaceChild(newItem, item);
+                
+                newItem.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Profile item clicked:', profileName);
+                    if (typeof window.switchProfile === 'function') {
+                        window.switchProfile(profileName);
+                    } else {
+                        console.error('switchProfile function not available');
+                    }
+                });
+            }
+        });
+    }, 100);
+    
+    // Close dropdown when clicking outside (set up once, not per initialization)
+    if (!window.profileDropdownClickHandler) {
+        window.profileDropdownClickHandler = function(event) {
+            const container = document.querySelector('.profile-selector-container');
+            if (container && !container.contains(event.target)) {
+                container.classList.remove('active');
+            }
+        };
+        document.addEventListener('click', window.profileDropdownClickHandler);
+    }
+}
+
 function initializeDeveloperPage() {
     // Initialize navbar scroll effect
     const developerNavbar = document.getElementById('developer-navbar');
@@ -84,6 +157,9 @@ function initializeDeveloperPage() {
             }
         });
     }
+    
+    // Initialize profile selector
+    initializeProfileSelector();
     
     // Create arched text effect for logo (only if logo contains text, not an image)
     const logo = document.querySelector('#developer-navbar .logo');

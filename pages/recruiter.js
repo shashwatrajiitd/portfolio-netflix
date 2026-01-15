@@ -80,27 +80,63 @@ function toggleProfileDropdown(event) {
     }
 }
 
-function switchProfile(profileName) {
+// Make switchProfile globally accessible
+window.switchProfile = async function(profileName) {
+    console.log(`Switching to profile: ${profileName}`);
+    
     // Close dropdown
     const container = document.querySelector('.profile-selector-container');
     if (container) {
         container.classList.remove('active');
     }
     
-    // Update current profile image
-    updateCurrentProfileImage(profileName);
-    
-    // Navigate to the selected profile using HistoryManager if available
-    if (typeof HistoryManager !== 'undefined') {
-        HistoryManager.pushState('profile', profileName, null);
-        HistoryManager.navigateToProfile(profileName, null);
-    } else {
-        // Fallback: use loadProfilePage if HistoryManager is not available
-        if (typeof loadProfilePage === 'function') {
-            loadProfilePage(profileName);
-        }
+    // Don't switch if clicking on the same profile
+    const currentPageId = document.querySelector('[id$="-page"]')?.id;
+    if (currentPageId === `${profileName.toLowerCase()}-page`) {
+        console.log('Already on this profile');
+        return; // Already on this profile
     }
-}
+    
+    // Use HistoryManager for navigation (it handles everything)
+    if (typeof HistoryManager !== 'undefined' && HistoryManager.navigateToProfile) {
+        // Push to history and navigate
+        HistoryManager.pushState('profile', profileName, null);
+        await HistoryManager.navigateToProfile(profileName, null);
+    } else if (typeof loadProfilePage === 'function') {
+        // Fallback: use loadProfilePage directly
+        const pageContainer = document.getElementById('profile-page-container');
+        const profileSelection = document.getElementById('profile-selection');
+        const mainApp = document.getElementById('main-app');
+        
+        // Hide profile selection if visible
+        if (profileSelection) {
+            profileSelection.style.display = 'none';
+            profileSelection.classList.remove('active');
+        }
+        
+        // Hide main app if visible
+        if (mainApp) {
+            mainApp.style.display = 'none';
+        }
+        
+        // Show and load profile page
+        if (pageContainer) {
+            pageContainer.style.display = 'block';
+            await loadProfilePage(profileName);
+            
+            // Reset scroll and trigger fade-in animation
+            window.scrollTo(0, 0);
+            setTimeout(() => {
+                const profilePage = document.getElementById(`${profileName.toLowerCase()}-page`);
+                if (profilePage) {
+                    profilePage.classList.add('active');
+                }
+            }, 10);
+        }
+    } else {
+        console.error('Navigation functions not available. HistoryManager or loadProfilePage required.');
+    }
+};
 
 function updateCurrentProfileImage(profileName) {
     const profileImages = {
@@ -124,13 +160,44 @@ function initializeProfileSelector() {
         updateCurrentProfileImage('Recruiter');
     }
     
-    // Close dropdown when clicking outside
-    document.addEventListener('click', function(event) {
-        const container = document.querySelector('.profile-selector-container');
-        if (container && !container.contains(event.target)) {
-            container.classList.remove('active');
-        }
-    });
+    // Wait for DOM to be ready, then set up event listeners
+    setTimeout(() => {
+        // Set up event listeners for profile dropdown items
+        const profileItems = document.querySelectorAll('.profile-dropdown-item');
+        profileItems.forEach(item => {
+            // Get profile name from data attribute or text content
+            const profileName = item.getAttribute('data-profile') || 
+                               item.querySelector('.profile-dropdown-name')?.textContent.trim();
+            
+            if (profileName) {
+                // Remove any existing listeners by cloning
+                const newItem = item.cloneNode(true);
+                item.parentNode.replaceChild(newItem, item);
+                
+                newItem.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Profile item clicked:', profileName);
+                    if (typeof window.switchProfile === 'function') {
+                        window.switchProfile(profileName);
+                    } else {
+                        console.error('switchProfile function not available');
+                    }
+                });
+            }
+        });
+    }, 100);
+    
+    // Close dropdown when clicking outside (set up once, not per initialization)
+    if (!window.profileDropdownClickHandler) {
+        window.profileDropdownClickHandler = function(event) {
+            const container = document.querySelector('.profile-selector-container');
+            if (container && !container.contains(event.target)) {
+                container.classList.remove('active');
+            }
+        };
+        document.addEventListener('click', window.profileDropdownClickHandler);
+    }
 }
 
 function initializeRecruiterPage() {
