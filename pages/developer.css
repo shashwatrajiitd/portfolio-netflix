@@ -540,12 +540,13 @@ button.btn-primary-cta {
 
 .watching-cards {
     display: flex;
-    gap: 134px;
+    gap: 2rem;
     overflow-x: auto;
     overflow-y: hidden;
     padding-top: 27px;
     padding-bottom: 1rem;
     scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
 }
 
 .watching-cards::-webkit-scrollbar {
@@ -565,6 +566,7 @@ button.btn-primary-cta {
 .watching-card {
     flex-shrink: 0;
     width: 200px;
+    min-width: 200px;
     cursor: pointer;
     transition: transform 0.3s ease;
 }
@@ -574,7 +576,7 @@ button.btn-primary-cta {
 }
 
 .card-image {
-    width: 300px;
+    width: 200px;
     height: 280px;
     border-radius: 8px;
     display: flex;
@@ -592,7 +594,7 @@ button.btn-primary-cta {
 }
 
 .card-label {
-    width: 300px;
+    width: 200px;
     text-align: center;
     color: #FFFFFF;
     font-weight: 600;
@@ -1350,12 +1352,24 @@ button.btn-primary-cta {
         justify-content: center;
     }
     
+    .watching-cards {
+        gap: 1rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
     .watching-card {
         width: 150px;
+        min-width: 150px;
     }
     
     .card-image {
+        width: 150px;
         height: 200px;
+    }
+    
+    .card-label {
+        width: 150px;
     }
     
     .experience-card {

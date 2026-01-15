@@ -719,6 +719,13 @@ function initializeProfileSelectorForAllPages() {
     
     console.log(`Current profile detected: ${capitalizedProfile} (from ${pageId})`);
     
+    // Update Continue Watching section title
+    const continueWatchingTitle = currentPage.querySelector('#continue-watching-title');
+    if (continueWatchingTitle) {
+        continueWatchingTitle.textContent = `Continue Watching for ${profileName}`;
+        console.log(`Updated Continue Watching title to: Continue Watching for ${profileName}`);
+    }
+    
     const profileImages = {
         'Recruiter': '../assets/icons/recruiter.png',
         'Developer': '../assets/icons/developer.png',
