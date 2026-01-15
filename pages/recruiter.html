@@ -1,8 +1,11 @@
 <!-- Top Navigation Bar -->
 <nav id="recruiter-navbar" class="recruiter-navbar">
     <div class="logo" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" style="cursor: pointer;">
-        <img src="assets/logo.png" alt="SHASHWAT RAJ" class="navbar-logo" style="display: block; width: 202px; height: 33px; object-fit: contain;" />
+        <img src="../assets/logo.png" alt="SHASHWAT RAJ" class="navbar-logo" style="display: block; width: 202px; height: 33px; object-fit: contain;" />
     </div>
+    <button class="mobile-menu-toggle" aria-label="Toggle menu">
+        <i class="fas fa-bars"></i>
+    </button>
     <ul class="nav-links">
         <li><a href="#recruiter-about">About</a></li>
         <li><a href="#recruiter-experience">Professional</a></li>
@@ -11,10 +14,38 @@
         <li><a href="#recruiter-achievements">Achievements</a></li>
         <li><a href="#recruiter-contact">Hire Me</a></li>
     </ul>
-    <div class="nav-cta">
-        <button class="btn btn-resume" onclick="downloadResume()">
-            <i class="fas fa-download"></i> Resume
-        </button>
+    <div class="navbar-right">
+        <div class="nav-cta">
+            <button class="btn btn-resume" onclick="downloadResume()">
+                <i class="fas fa-download"></i> <span class="resume-text">Resume</span>
+            </button>
+        </div>
+        <div class="profile-selector-container">
+        <div class="profile-tile-wrapper" onclick="toggleProfileDropdown(event)">
+            <div class="profile-tile">
+                <img src="../assets/icons/recruiter.png" alt="Recruiter" class="profile-tile-img" id="current-profile-img">
+            </div>
+            <i class="fas fa-chevron-down profile-dropdown-icon"></i>
+        </div>
+        <div class="profile-dropdown" id="profile-dropdown">
+            <div class="profile-dropdown-item" onclick="switchProfile('Recruiter')">
+                <img src="../assets/icons/recruiter.png" alt="Recruiter" class="profile-dropdown-img">
+                <span class="profile-dropdown-name">Recruiter</span>
+            </div>
+            <div class="profile-dropdown-item" onclick="switchProfile('Developer')">
+                <img src="../assets/icons/developer.png" alt="Developer" class="profile-dropdown-img">
+                <span class="profile-dropdown-name">Developer</span>
+            </div>
+            <div class="profile-dropdown-item" onclick="switchProfile('Stalker')">
+                <img src="../assets/icons/stalker.png" alt="Stalker" class="profile-dropdown-img">
+                <span class="profile-dropdown-name">Stalker</span>
+            </div>
+            <div class="profile-dropdown-item" onclick="switchProfile('Adventurer')">
+                <img src="../assets/icons/adventurer.png" alt="Adventurer" class="profile-dropdown-img">
+                <span class="profile-dropdown-name">Adventurer</span>
+            </div>
+        </div>
+    </div>
     </div>
 </nav>
 

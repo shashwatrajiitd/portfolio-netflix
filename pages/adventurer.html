@@ -1,8 +1,11 @@
 <!-- Top Navigation Bar -->
 <nav id="adventurer-navbar" class="adventurer-navbar">
     <div class="logo" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" style="cursor: pointer;">
-        <img src="assets/logo.png" alt="SHASHWAT RAJ" class="navbar-logo" style="display: block; width: 202px; height: 33px; object-fit: contain;" />
+        <img src="../assets/logo.png" alt="SHASHWAT RAJ" class="navbar-logo" style="display: block; width: 202px; height: 33px; object-fit: contain;" />
     </div>
+    <button class="mobile-menu-toggle" aria-label="Toggle menu">
+        <i class="fas fa-bars"></i>
+    </button>
     <ul class="nav-links">
         <li><a href="#adventurer-about">About</a></li>
         <li><a href="#adventurer-experience">Professional</a></li>
@@ -13,7 +16,7 @@
     </ul>
     <div class="nav-cta">
         <button class="btn btn-resume" onclick="downloadResume()">
-            <i class="fas fa-download"></i> Resume
+            <i class="fas fa-download"></i> <span class="resume-text">Resume</span>
         </button>
     </div>
 </nav>

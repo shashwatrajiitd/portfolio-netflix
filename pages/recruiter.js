@@ -69,6 +69,70 @@ function createArchedText(element) {
     });
 }
 
+// Profile Selector Functions
+function toggleProfileDropdown(event) {
+    if (event) {
+        event.stopPropagation();
+    }
+    const container = document.querySelector('.profile-selector-container');
+    if (container) {
+        container.classList.toggle('active');
+    }
+}
+
+function switchProfile(profileName) {
+    // Close dropdown
+    const container = document.querySelector('.profile-selector-container');
+    if (container) {
+        container.classList.remove('active');
+    }
+    
+    // Update current profile image
+    updateCurrentProfileImage(profileName);
+    
+    // Navigate to the selected profile using HistoryManager if available
+    if (typeof HistoryManager !== 'undefined') {
+        HistoryManager.pushState('profile', profileName, null);
+        HistoryManager.navigateToProfile(profileName, null);
+    } else {
+        // Fallback: use loadProfilePage if HistoryManager is not available
+        if (typeof loadProfilePage === 'function') {
+            loadProfilePage(profileName);
+        }
+    }
+}
+
+function updateCurrentProfileImage(profileName) {
+    const profileImages = {
+        'Recruiter': '../assets/icons/recruiter.png',
+        'Developer': '../assets/icons/developer.png',
+        'Stalker': '../assets/icons/stalker.png',
+        'Adventurer': '../assets/icons/adventurer.png'
+    };
+    
+    const currentProfileImg = document.getElementById('current-profile-img');
+    if (currentProfileImg && profileImages[profileName]) {
+        currentProfileImg.src = profileImages[profileName];
+        currentProfileImg.alt = profileName;
+    }
+}
+
+function initializeProfileSelector() {
+    // Set current profile image based on current page
+    const currentPage = document.getElementById('recruiter-page');
+    if (currentPage) {
+        updateCurrentProfileImage('Recruiter');
+    }
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        const container = document.querySelector('.profile-selector-container');
+        if (container && !container.contains(event.target)) {
+            container.classList.remove('active');
+        }
+    });
+}
+
 function initializeRecruiterPage() {
     // Initialize navbar scroll effect
     const recruiterNavbar = document.getElementById('recruiter-navbar');
@@ -84,6 +148,9 @@ function initializeRecruiterPage() {
             }
         });
     }
+    
+    // Initialize profile selector
+    initializeProfileSelector();
     
     // Create arched text effect for logo (only if logo contains text, not an image)
     const logo = document.querySelector('#recruiter-navbar .logo');

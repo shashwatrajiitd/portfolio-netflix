@@ -134,10 +134,99 @@ document.addEventListener('DOMContentLoaded', () => {
                     behavior: 'smooth',
                     block: 'start'
                 });
+                // Close mobile menu if open
+                closeMobileMenu();
             }
         });
     });
+    
+    // Mobile menu toggle functionality - initialize immediately
+    setupMobileMenu();
+    
+    // Also initialize after a short delay to ensure DOM is ready
+    setTimeout(() => {
+        setupMobileMenu();
+    }, 100);
 });
+
+// Mobile menu functionality
+function setupMobileMenu() {
+    const menuToggles = document.querySelectorAll('.mobile-menu-toggle');
+    const navLinks = document.querySelectorAll('.nav-links');
+    
+    menuToggles.forEach(toggle => {
+        // Remove any existing event listeners by cloning
+        const newToggle = toggle.cloneNode(true);
+        toggle.parentNode.replaceChild(newToggle, toggle);
+        
+        newToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Find the corresponding nav-links for this toggle
+            const navbar = this.closest('nav');
+            const links = navbar ? navbar.querySelector('.nav-links') : null;
+            
+            if (links) {
+                const isActive = links.classList.contains('active');
+                links.classList.toggle('active');
+                
+                // Change icon
+                const icon = this.querySelector('i');
+                if (icon) {
+                    if (!isActive) {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-times');
+                    } else {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                }
+            }
+        });
+    });
+    
+    // Close menu when clicking outside (with delay to allow toggle click)
+    document.addEventListener('click', function(e) {
+        // Don't close if clicking on the toggle button or inside the menu
+        if (e.target.closest('.mobile-menu-toggle') || e.target.closest('.nav-links')) {
+            return;
+        }
+        
+        // Close all menus
+        navLinks.forEach(links => {
+            if (links.classList.contains('active')) {
+                links.classList.remove('active');
+                const navbar = links.closest('nav');
+                if (navbar) {
+                    const toggle = navbar.querySelector('.mobile-menu-toggle');
+                    if (toggle) {
+                        const icon = toggle.querySelector('i');
+                        if (icon) {
+                            icon.classList.remove('fa-times');
+                            icon.classList.add('fa-bars');
+                        }
+                    }
+                }
+            }
+        });
+    });
+}
+
+function closeMobileMenu() {
+    const navLinks = document.querySelectorAll('.nav-links');
+    navLinks.forEach(links => {
+        links.classList.remove('active');
+    });
+    const toggles = document.querySelectorAll('.mobile-menu-toggle');
+    toggles.forEach(toggle => {
+        const icon = toggle.querySelector('i');
+        if (icon) {
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-bars');
+        }
+    });
+}
 
 // ============================================
 // Browser History Management System
@@ -439,6 +528,11 @@ async function loadProfilePage(profileName) {
         const html = await response.text();
         pageContainer.innerHTML = `<div id="${profileName.toLowerCase()}-page">${html}</div>`;
         
+        // Setup mobile menu after HTML is loaded
+        setTimeout(() => {
+            setupMobileMenu();
+        }, 100);
+        
         // Load CSS
         const cssLink = document.createElement('link');
         cssLink.rel = 'stylesheet';
@@ -468,6 +562,8 @@ async function loadProfilePage(profileName) {
             if (initFunction && typeof initFunction === 'function') {
                 initFunction();
             }
+            // Setup mobile menu for dynamically loaded pages
+            setupMobileMenu();
         };
         
     } catch (error) {
