@@ -1,26 +1,41 @@
 // Adventurer Page Specific JavaScript
 
 function downloadResume() {
-    // Placeholder - replace with actual resume URL
-    const resumeUrl = '#'; // Add your resume PDF URL here
-    if (resumeUrl && resumeUrl !== '#') {
-        window.open(resumeUrl, '_blank');
-    } else {
-        // Fallback: open email with resume request
-        window.location.href = 'mailto:shashwatrajiitd@gmail.com?subject=Resume Request&body=Hi Shashwat, I would like to request your resume.';
-    }
+    // Download resume from assets/resume/shashwat_resume.pdf
+    const resumeUrl = '../assets/resume/shashwat_resume.pdf';
+    const link = document.createElement('a');
+    link.href = resumeUrl;
+    link.download = 'shashwat_resume.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
 
 function scheduleInterview() {
-    // Placeholder - replace with actual calendar booking URL
-    const calendarUrl = '#'; // Add your calendar booking URL (Calendly, etc.)
-    if (calendarUrl && calendarUrl !== '#') {
-        window.open(calendarUrl, '_blank');
-    } else {
-        // Fallback: open email for interview scheduling
-        window.location.href = 'mailto:shashwatrajiitd@gmail.com?subject=Interview Scheduling&body=Hi Shashwat, I would like to schedule an interview with you.';
-    }
+    // Redirect to Google Calendar event creation page with email as recipient
+    const calendarUrl = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Interview+with+Shashwat+Raj&add=shashwatrajiitd@gmail.com';
+    window.open(calendarUrl, '_blank');
 }
+
+// Make openEmail globally accessible
+window.openEmail = function() {
+    // Open email client with recipient - using multiple methods for maximum compatibility
+    try {
+        // Method 1: Create and click anchor element (most reliable)
+        const emailLink = document.createElement('a');
+        emailLink.href = 'mailto:shashwatrajiitd@gmail.com';
+        emailLink.style.display = 'none';
+        document.body.appendChild(emailLink);
+        emailLink.click();
+        setTimeout(() => {
+            document.body.removeChild(emailLink);
+        }, 100);
+    } catch (e) {
+        // Method 2: Fallback to window.location
+        console.warn('Anchor click failed, using window.location:', e);
+        window.location.href = 'mailto:shashwatrajiitd@gmail.com';
+    }
+};
 
 function scrollToSection(sectionId) {
     // Push to history if HistoryManager is available
