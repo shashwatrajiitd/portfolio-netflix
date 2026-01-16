@@ -565,8 +565,8 @@ button.btn-primary-cta {
 
 .watching-card {
     flex-shrink: 0;
-    width: 200px;
-    min-width: 200px;
+    width: 240px;
+    min-width: 240px;
     cursor: pointer;
     transition: transform 0.3s ease;
 }
@@ -576,7 +576,7 @@ button.btn-primary-cta {
 }
 
 .card-image {
-    width: 200px;
+    width: 240px;
     height: 280px;
     border-radius: 8px;
     display: flex;
@@ -594,7 +594,7 @@ button.btn-primary-cta {
 }
 
 .card-label {
-    width: 200px;
+    width: 240px;
     text-align: center;
     color: #FFFFFF;
     font-weight: 600;

@@ -901,8 +901,8 @@ function initializeProfileSelectorForAllPages() {
     // Update Continue Watching section title
     const continueWatchingTitle = currentPage.querySelector('#continue-watching-title');
     if (continueWatchingTitle) {
-        continueWatchingTitle.textContent = `Continue Watching for ${profileName}`;
-        console.log(`Updated Continue Watching title to: Continue Watching for ${profileName}`);
+        continueWatchingTitle.textContent = `Continue Watching for ${capitalizedProfile}`;
+        console.log(`Updated Continue Watching title to: Continue Watching for ${capitalizedProfile}`);
     }
     
     const profileImages = {
