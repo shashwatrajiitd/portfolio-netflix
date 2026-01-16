@@ -245,14 +245,30 @@ function initializeRecruiterPage() {
     }
     
     // Smooth scroll for anchor links with history support
-    const recruiterLinks = document.querySelectorAll('#recruiter-page a[href^="#"], .instagram-main a[href^="#"]');
-    recruiterLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href').substring(1);
-            scrollToSection(targetId);
+    // Use a more specific selector to avoid conflicts
+    const recruiterPage = document.getElementById('recruiter-page');
+    if (recruiterPage) {
+        const recruiterLinks = recruiterPage.querySelectorAll('a[href^="#"]');
+        recruiterLinks.forEach(link => {
+            // Skip if already handled by global setupNavigationLinks
+            if (link.hasAttribute('data-nav-handler-set')) {
+                return;
+            }
+            
+            // Remove existing listeners by cloning
+            const newLink = link.cloneNode(true);
+            link.parentNode.replaceChild(newLink, link);
+            
+            newLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const targetId = this.getAttribute('href').substring(1);
+                if (targetId && typeof scrollToSection === 'function') {
+                    scrollToSection(targetId);
+                }
+            }, true); // Use capture phase
         });
-    });
+    }
     
     // Handle initial URL hash if present
     if (window.location.hash) {

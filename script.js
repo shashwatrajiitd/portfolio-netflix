@@ -124,21 +124,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Auto-start the Netflix animation
     startExperience();
 
-    // Smooth scroll for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-                // Close mobile menu if open
-                closeMobileMenu();
-            }
-        });
-    });
+    // Setup navigation links for initial page load
+    setupNavigationLinks();
     
     // Mobile menu toggle functionality - initialize immediately
     setupMobileMenu();
@@ -225,6 +212,69 @@ function closeMobileMenu() {
             icon.classList.remove('fa-times');
             icon.classList.add('fa-bars');
         }
+    });
+}
+
+// Universal function to set up navigation links - works for all profiles
+function setupNavigationLinks() {
+    // Find all anchor links that start with # (section links) within profile pages
+    const pageContainer = document.getElementById('profile-page-container');
+    const currentPage = pageContainer ? pageContainer.querySelector('[id$="-page"]') : null;
+    
+    // Only set up links within the current profile page to avoid conflicts
+    const anchors = currentPage 
+        ? currentPage.querySelectorAll('a[href^="#"]')
+        : document.querySelectorAll('a[href^="#"]');
+    
+    anchors.forEach(anchor => {
+        // Skip if this anchor already has our custom handler (check for data attribute)
+        if (anchor.hasAttribute('data-nav-handler-set')) {
+            return;
+        }
+        
+        // Mark as handled
+        anchor.setAttribute('data-nav-handler-set', 'true');
+        
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const href = this.getAttribute('href');
+            if (!href || href === '#' || href === '#!') return;
+            
+            const targetId = href.substring(1); // Remove the #
+            
+            // Try to use profile-specific scrollToSection function (it's in the profile's JS scope)
+            // Since scrollToSection is defined in each profile's JS file, we need to check if it exists
+            // The profile initialization should have set it up, but we'll also handle it here
+            
+            // First, try to find the target element
+            const target = document.getElementById(targetId);
+            if (!target) {
+                console.warn(`Section with id "${targetId}" not found`);
+                return;
+            }
+            
+            // Use HistoryManager to update URL and scroll
+            if (typeof HistoryManager !== 'undefined' && !HistoryManager.isNavigating) {
+                const currentPageId = currentPage ? currentPage.id : null;
+                if (currentPageId) {
+                    const profileName = currentPageId.replace('-page', '');
+                    const capitalizedProfile = profileName.charAt(0).toUpperCase() + profileName.slice(1);
+                    HistoryManager.pushState('section', capitalizedProfile, targetId);
+                }
+            }
+            
+            // Scroll to target
+            const offsetTop = target.offsetTop - 80; // Account for fixed navbar
+            window.scrollTo({
+                top: offsetTop,
+                behavior: 'smooth'
+            });
+            
+            // Close mobile menu if open
+            closeMobileMenu();
+        }, true); // Use capture phase to ensure it fires before other handlers
     });
 }
 
@@ -369,8 +419,6 @@ const HistoryManager = {
         
         // Show and load profile page
         if (pageContainer) {
-            pageContainer.style.display = 'block';
-            
             // Hide all existing profile pages first
             const allProfilePages = document.querySelectorAll('[id$="-page"]');
             allProfilePages.forEach(page => {
@@ -381,58 +429,126 @@ const HistoryManager = {
             // Check if profile is already loaded in the container
             const existingPage = pageContainer.querySelector(`#${profileName.toLowerCase()}-page`);
             if (!existingPage) {
-                // Load the profile page
+                // Load the profile page (it will handle visibility)
                 console.log(`Loading new profile page: ${profileName}`);
+                pageContainer.style.display = 'block';
+                pageContainer.style.opacity = '1';
+                pageContainer.style.visibility = 'visible';
                 await loadProfilePage(profileName);
             } else {
-                // Profile already exists, just show it and reinitialize
-                console.log(`Profile ${profileName} already exists, showing it`);
-                existingPage.style.display = 'block';
-                existingPage.classList.add('active');
+                // Profile already exists, but we still need to preload videos
+                console.log(`Profile ${profileName} already exists, reinitializing with preload`);
                 
-                // Hide all other profile pages
+                // Ensure pageContainer is visible
+                pageContainer.style.display = 'block';
+                pageContainer.style.opacity = '1';
+                pageContainer.style.visibility = 'visible';
+                
+                // Hide all other profile pages first
                 const allPages = pageContainer.querySelectorAll('[id$="-page"]');
                 allPages.forEach(page => {
                     if (page.id !== `${profileName.toLowerCase()}-page`) {
                         page.style.display = 'none';
                         page.classList.remove('active');
+                        page.style.opacity = '0';
+                        page.style.visibility = 'hidden';
                     }
                 });
                 
+                // Show the existing page immediately
+                existingPage.style.display = 'block';
+                existingPage.classList.add('active');
+                
                 // Reinitialize the page's JavaScript
+                const initFunction = window[`initialize${profileName}Page`];
+                if (initFunction && typeof initFunction === 'function') {
+                    console.log(`Reinitializing ${profileName} page`);
+                    initFunction();
+                }
+                
+                // Show the page immediately - don't wait for videos
+                requestAnimationFrame(() => {
+                    existingPage.style.transition = 'opacity 0.3s ease-in';
+                    existingPage.style.visibility = 'visible';
+                    existingPage.style.opacity = '1';
+                    existingPage.style.display = 'block';
+                    existingPage.classList.add('active'); // Ensure active class is set
+                });
+                
+                // Safety: Force show after a short delay to ensure it's visible
                 setTimeout(() => {
-                    const initFunction = window[`initialize${profileName}Page`];
-                    if (initFunction && typeof initFunction === 'function') {
-                        console.log(`Reinitializing ${profileName} page`);
-                        initFunction();
+                    // Check computed styles, not inline styles
+                    const computedStyle = window.getComputedStyle(existingPage);
+                    if (computedStyle.opacity === '0' || computedStyle.visibility === 'hidden') {
+                        console.warn('Page still hidden after switch, forcing visibility');
+                        existingPage.style.opacity = '1';
+                        existingPage.style.visibility = 'visible';
+                        existingPage.style.display = 'block';
+                        existingPage.classList.add('active');
                     }
-                    
-                    // Reinitialize video carousel for the profile
-                    const profileType = `${profileName.toLowerCase()}_profile`;
-                    if (typeof initializeVideoCarousel === 'function') {
-                        setTimeout(() => {
+                    // Also ensure pageContainer is visible
+                    if (pageContainer) {
+                        pageContainer.style.display = 'block';
+                        pageContainer.style.opacity = '1';
+                        pageContainer.style.visibility = 'visible';
+                    }
+                }, 200);
+                
+                // Reinitialize video carousel in background (don't block page display)
+                const profileType = `${profileName.toLowerCase()}_profile`;
+                if (typeof initializeVideoCarousel === 'function') {
+                    // Initialize video carousel asynchronously without blocking
+                    setTimeout(() => {
+                        try {
                             console.log(`Reinitializing video carousel for ${profileType}`);
                             initializeVideoCarousel(profileType);
-                        }, 300);
-                    }
+                            
+                            // After video carousel init, ensure page is still visible
+                            existingPage.classList.add('active');
+                            existingPage.style.opacity = '1';
+                            existingPage.style.visibility = 'visible';
+                            existingPage.style.display = 'block';
+                        } catch (error) {
+                            console.warn('Video carousel reinitialization issue:', error);
+                        }
+                    }, 100);
+                }
+                
+                // Ensure profile selector is initialized
+                setTimeout(() => {
+                    console.log('Initializing profile selector for existing page');
+                    initializeProfileSelectorForAllPages();
                     
-                    // Ensure profile selector is initialized
-                    setTimeout(() => {
-                        console.log('Initializing profile selector for existing page');
-                        initializeProfileSelectorForAllPages();
-                    }, 200);
-                }, 100);
+                    // Also setup navigation links
+                    setupNavigationLinks();
+                    
+                    // Final check: ensure page is visible (CSS might have hidden it)
+                    existingPage.classList.add('active');
+                    existingPage.style.opacity = '1';
+                    existingPage.style.visibility = 'visible';
+                    existingPage.style.display = 'block';
+                    if (pageContainer) {
+                        pageContainer.style.opacity = '1';
+                        pageContainer.style.visibility = 'visible';
+                        pageContainer.style.display = 'block';
+                    }
+                }, 150);
             }
             
-            // Wait for page to be ready
+            // Wait for page to be ready and navigate to section if specified
             setTimeout(() => {
                 const profilePage = document.getElementById(`${profileName.toLowerCase()}-page`);
                 if (profilePage) {
-                    profilePage.classList.add('active');
-                    profilePage.style.display = 'block';
-                    
                     // Ensure profile selector is initialized
                     initializeProfileSelectorForAllPages();
+                    
+                    // Setup navigation links for the profile page
+                    setupNavigationLinks();
+                    
+                    // Re-initialize profile selector to ensure dropdown works
+                    setTimeout(() => {
+                        initializeProfileSelectorForAllPages();
+                    }, 150);
                     
                     // Navigate to section if specified
                     if (section) {
@@ -617,26 +733,45 @@ window.openEmail = function() {
 window.switchProfile = async function(profileName) {
     console.log(`Switching to profile: ${profileName}`);
     
-    // Close dropdown if open
-    const container = document.querySelector('.profile-selector-container');
+    // Close dropdown if open - try multiple ways to find it
+    const pageContainer = document.getElementById('profile-page-container');
+    let container = null;
+    
+    if (pageContainer) {
+        const currentPage = pageContainer.querySelector('[id$="-page"]');
+        if (currentPage) {
+            container = currentPage.querySelector('.profile-selector-container');
+        }
+    }
+    
+    if (!container) {
+        container = document.querySelector('.profile-selector-container');
+    }
+    
     if (container) {
         container.classList.remove('active');
     }
     
     // Don't switch if clicking on the same profile
-    const currentPageId = document.querySelector('[id$="-page"]')?.id;
+    const currentPageId = pageContainer ? pageContainer.querySelector('[id$="-page"]')?.id : null;
     if (currentPageId === `${profileName.toLowerCase()}-page`) {
         console.log('Already on this profile');
         return; // Already on this profile
     }
     
-    // Hide all current profile pages first
-    const pageContainer = document.getElementById('profile-page-container');
+    // Ensure pageContainer is visible when switching
     if (pageContainer) {
+        pageContainer.style.display = 'block';
+        pageContainer.style.opacity = '1';
+        pageContainer.style.visibility = 'visible';
+        
+        // Hide all current profile pages first
         const allProfilePages = pageContainer.querySelectorAll('[id$="-page"]');
         allProfilePages.forEach(page => {
             page.classList.remove('active');
             page.style.display = 'none';
+            page.style.opacity = '0';
+            page.style.visibility = 'hidden';
         });
     }
     
@@ -678,7 +813,7 @@ async function loadProfilePageDirectly(profileName) {
         mainApp.style.display = 'none';
     }
     
-    // Show and load profile page
+    // Show and load profile page (it will handle visibility)
     if (pageContainer) {
         pageContainer.style.display = 'block';
         await loadProfilePage(profileName);
@@ -697,20 +832,40 @@ async function loadProfilePageDirectly(profileName) {
 // Make toggleProfileDropdown globally accessible
 window.toggleProfileDropdown = function(event) {
     if (event) {
+        event.preventDefault();
         event.stopPropagation();
     }
-    const container = document.querySelector('.profile-selector-container');
+    
+    // Try to find container in current profile page first
+    const pageContainer = document.getElementById('profile-page-container');
+    let container = null;
+    
+    if (pageContainer) {
+        const currentPage = pageContainer.querySelector('[id$="-page"]');
+        if (currentPage) {
+            container = currentPage.querySelector('.profile-selector-container');
+        }
+    }
+    
+    // Fallback to global search
+    if (!container) {
+        container = document.querySelector('.profile-selector-container');
+    }
+    
     if (container) {
         console.log('toggleProfileDropdown: Toggling container active state');
+        const wasActive = container.classList.contains('active');
         container.classList.toggle('active');
-        console.log('Container classes after toggle:', container.className);
-        console.log('Is active?', container.classList.contains('active'));
+        const isActive = container.classList.contains('active');
+        console.log(`Container state: ${wasActive} -> ${isActive}`);
         
         // Also check if dropdown is visible
         const dropdown = container.querySelector('.profile-dropdown');
         if (dropdown) {
             console.log('Dropdown element found');
-            console.log('Dropdown computed style:', window.getComputedStyle(dropdown).visibility);
+            const computedStyle = window.getComputedStyle(dropdown);
+            console.log('Dropdown visibility:', computedStyle.visibility);
+            console.log('Dropdown display:', computedStyle.display);
         }
     } else {
         console.error('toggleProfileDropdown: Could not find profile-selector-container');
@@ -786,16 +941,33 @@ function initializeProfileSelectorForAllPages() {
             const newItem = item.cloneNode(true);
             item.parentNode.replaceChild(newItem, item);
             
+            // Remove any inline onclick handlers
+            newItem.removeAttribute('onclick');
+            newItem.onclick = null;
+            
             newItem.addEventListener('click', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
                 console.log('Profile item clicked:', profileName);
+                
+                // Close dropdown first
+                const container = newItem.closest('.profile-selector-container');
+                if (container) {
+                    container.classList.remove('active');
+                }
+                
+                // Switch profile
                 if (typeof window.switchProfile === 'function') {
                     window.switchProfile(profileName);
                 } else {
                     console.error('switchProfile function not available');
+                    // Fallback: try to navigate directly
+                    if (typeof HistoryManager !== 'undefined' && HistoryManager.navigateToProfile) {
+                        HistoryManager.pushState('profile', profileName, null);
+                        HistoryManager.navigateToProfile(profileName, null);
+                    }
                 }
-            });
+            }, true); // Use capture phase
             
             console.log(`✓ Set up listener for profile: ${profileName}`);
         }
@@ -879,9 +1051,106 @@ function initializeProfileSelectorForAllPages() {
     console.log('=== Profile selector initialization complete ===');
 }
 
+// Helper function to wait for video carousel to be ready
+function waitForVideoCarouselReady(profileType) {
+    return new Promise((resolve, reject) => {
+        const pageContainer = document.getElementById('profile-page-container');
+        if (!pageContainer) {
+            resolve(); // No container, nothing to wait for
+            return;
+        }
+        
+        const currentPage = pageContainer.querySelector('[id$="-page"]');
+        if (!currentPage) {
+            resolve(); // No page, nothing to wait for
+            return;
+        }
+        
+        const videoContainer = currentPage.querySelector('#hero-video-container');
+        if (!videoContainer) {
+            // Video container not found, wait a bit and try again
+            setTimeout(() => {
+                waitForVideoCarouselReady(profileType).then(resolve).catch(reject);
+            }, 200);
+            return;
+        }
+        
+        // Check if videos exist
+        const videos = videoContainer.querySelectorAll('video');
+        if (videos.length === 0) {
+            // No videos yet, wait for initializeVideoCarousel to create them
+            // We'll check again after a delay
+            setTimeout(() => {
+                waitForVideoCarouselReady(profileType).then(resolve).catch(reject);
+            }, 300);
+            return;
+        }
+        
+        // Wait for all videos to be ready
+        const totalVideos = videos.length;
+        
+        if (totalVideos === 0) {
+            resolve(); // No videos to wait for
+            return;
+        }
+        
+        const checkVideoReady = (video) => {
+            return new Promise((videoResolve) => {
+                // Check if video is already ready
+                if (video.readyState >= 3) { // HAVE_FUTURE_DATA or higher
+                    videoResolve();
+                    return;
+                }
+                
+                // Wait for canplaythrough event (video can play without buffering)
+                const onCanPlayThrough = () => {
+                    video.removeEventListener('canplaythrough', onCanPlayThrough);
+                    video.removeEventListener('error', onError);
+                    videoResolve();
+                };
+                
+                const onError = () => {
+                    video.removeEventListener('canplaythrough', onCanPlayThrough);
+                    video.removeEventListener('error', onError);
+                    videoResolve(); // Resolve anyway to not block loading
+                };
+                
+                video.addEventListener('canplaythrough', onCanPlayThrough, { once: true });
+                video.addEventListener('error', onError, { once: true });
+                
+                // Timeout after 5 seconds per video
+                setTimeout(() => {
+                    video.removeEventListener('canplaythrough', onCanPlayThrough);
+                    video.removeEventListener('error', onError);
+                    videoResolve(); // Resolve anyway after timeout
+                }, 5000);
+            });
+        };
+        
+        // Wait for all videos
+        Promise.all(Array.from(videos).map(checkVideoReady)).then(() => {
+            console.log(`All ${totalVideos} videos are ready`);
+            resolve();
+        }).catch(reject);
+    });
+}
+
 async function loadProfilePage(profileName) {
     const pageContainer = document.getElementById('profile-page-container');
     if (!pageContainer) return;
+
+    // Keep page hidden while loading
+    pageContainer.style.opacity = '0';
+    pageContainer.style.visibility = 'hidden';
+    pageContainer.style.display = 'block'; // Keep display: block for layout
+    
+    // Safety timeout: ensure page shows after 3 seconds even if something fails
+    let safetyTimeout = setTimeout(() => {
+        console.warn('Safety timeout: Forcing page to show after 3 seconds');
+        pageContainer.style.transition = 'opacity 0.3s ease-in';
+        pageContainer.style.visibility = 'visible';
+        pageContainer.style.opacity = '1';
+    }, 3000);
 
     // Load HTML
     try {
@@ -892,7 +1161,8 @@ async function loadProfilePage(profileName) {
         const html = await response.text();
         
         // Clear container and load new profile
-        pageContainer.innerHTML = `<div id="${profileName.toLowerCase()}-page">${html}</div>`;
+        // Add 'active' class immediately so CSS doesn't hide it
+        pageContainer.innerHTML = `<div id="${profileName.toLowerCase()}-page" class="active">${html}</div>`;
         
         // Setup mobile menu after HTML is loaded
         setTimeout(() => {
@@ -911,6 +1181,18 @@ async function loadProfilePage(profileName) {
         
         document.head.appendChild(cssLink);
         
+        // Wait for CSS to load
+        await new Promise((resolve) => {
+            if (cssLink.sheet) {
+                resolve();
+            } else {
+                cssLink.onload = resolve;
+                cssLink.onerror = resolve; // Continue even if CSS fails
+                // Timeout after 2 seconds
+                setTimeout(resolve, 2000);
+            }
+        });
+        
         // Load JS
         const jsScript = document.createElement('script');
         jsScript.src = `pages/${profileName.toLowerCase()}.js`;
@@ -920,12 +1202,14 @@ async function loadProfilePage(profileName) {
         const prevJs = document.getElementById(`${profileName.toLowerCase()}-js`);
         if (prevJs) prevJs.remove();
         
-        // Initialize page-specific functions when script loads
-        jsScript.onload = () => {
-            console.log(`Loaded ${profileName} page script`);
-            
-            // Wait a bit for the script to fully execute
-            setTimeout(() => {
+        // Wait for JS to load and initialize
+        await new Promise((resolve) => {
+            jsScript.onload = async () => {
+                console.log(`Loaded ${profileName} page script`);
+                
+                // Wait a bit for the script to fully execute
+                await new Promise(r => setTimeout(r, 100));
+                
                 const initFunction = window[`initialize${profileName}Page`];
                 if (initFunction && typeof initFunction === 'function') {
                     console.log(`Calling initialize${profileName}Page`);
@@ -937,34 +1221,95 @@ async function loadProfilePage(profileName) {
                 // Setup mobile menu for dynamically loaded pages
                 setupMobileMenu();
                 
-                // Ensure video carousel is initialized
+                // Show the page immediately - don't wait for videos
+                clearTimeout(safetyTimeout); // Clear safety timeout since we're showing the page
+                
+                // Get the actual profile page element (not just the container)
+                const profilePage = document.getElementById(`${profileName.toLowerCase()}-page`);
+                
+                requestAnimationFrame(() => {
+                    // Show the container
+                    pageContainer.style.transition = 'opacity 0.3s ease-in';
+                    pageContainer.style.visibility = 'visible';
+                    pageContainer.style.opacity = '1';
+                    
+                    // Also ensure the profile page itself is visible and has active class
+                    if (profilePage) {
+                        profilePage.classList.add('active');
+                        profilePage.style.opacity = '1';
+                        profilePage.style.visibility = 'visible';
+                        profilePage.style.display = 'block';
+                    }
+                });
+                
+                // Initialize video carousel in background (don't block page display)
                 const profileType = `${profileName.toLowerCase()}_profile`;
                 if (typeof initializeVideoCarousel === 'function') {
+                    // Initialize video carousel asynchronously without blocking
                     setTimeout(() => {
-                        console.log(`Initializing video carousel for ${profileType}`);
-                        initializeVideoCarousel(profileType);
-                    }, 400);
+                        try {
+                            console.log(`Initializing video carousel for ${profileType}`);
+                            initializeVideoCarousel(profileType);
+                            
+                            // After video carousel init, ensure page is still visible
+                            if (profilePage) {
+                                profilePage.classList.add('active');
+                                profilePage.style.opacity = '1';
+                                profilePage.style.visibility = 'visible';
+                            }
+                        } catch (error) {
+                            console.warn('Video carousel initialization issue:', error);
+                        }
+                    }, 100);
                 }
                 
-                // Ensure profile selector is initialized for all profiles
-                // Use a longer delay to ensure DOM is fully ready
+                // Ensure profile selector is initialized
                 setTimeout(() => {
                     console.log('Initializing profile selector after page load');
                     initializeProfileSelectorForAllPages();
-                }, 500);
-            }, 100);
-        };
+                    
+                    // Setup navigation links for the newly loaded profile page
+                    setupNavigationLinks();
+                    
+                    // Final check: ensure page is visible (CSS might have hidden it)
+                    if (profilePage) {
+                        profilePage.classList.add('active');
+                        profilePage.style.opacity = '1';
+                        profilePage.style.visibility = 'visible';
+                    }
+                    if (pageContainer) {
+                        pageContainer.style.opacity = '1';
+                        pageContainer.style.visibility = 'visible';
+                        pageContainer.style.display = 'block';
+                    }
+                }, 200); // Increased delay to ensure DOM is fully ready
+                
+                resolve();
+            };
+            
+            jsScript.onerror = () => {
+                console.error(`Failed to load ${profileName} page script`);
+                clearTimeout(safetyTimeout); // Clear safety timeout
+                // Show page even if JS fails
+                pageContainer.style.transition = 'opacity 0.3s ease-in';
+                pageContainer.style.visibility = 'visible';
+                pageContainer.style.opacity = '1';
+                resolve(); // Continue even if JS fails
+            };
+            
+            document.body.appendChild(jsScript);
+        });
         
-        // Handle script load errors
-        jsScript.onerror = () => {
-            console.error(`Failed to load ${profileName} page script`);
-        };
-        
-        document.body.appendChild(jsScript);
+        // Note: Page visibility is now handled inside the JS onload handler
+        // This ensures the page shows immediately after JS loads, not waiting for videos
         
     } catch (error) {
         console.error(`Error loading ${profileName} page:`, error);
-        pageContainer.innerHTML = `<div style="padding: 100px; text-align: center;"><h1>${profileName} Page - Coming Soon</h1></div>`;
+        clearTimeout(safetyTimeout); // Clear safety timeout
+        pageContainer.innerHTML = `<div style="padding: 100px; text-align: center; color: white;"><h1>${profileName} Page - Coming Soon</h1></div>`;
+        pageContainer.style.opacity = '1';
+        pageContainer.style.visibility = 'visible';
+        pageContainer.style.display = 'block';
     }
 }
 
@@ -995,15 +1340,15 @@ function selectProfile(profile) {
             // Hide main app
             if (mainApp) mainApp.style.display = 'none';
             
-            // Show page container
+            // Show page container (but it will be hidden until ready)
             if (pageContainer) {
-                pageContainer.style.display = 'block';
-                
-                // Load the profile page
+                // Load the profile page (it will show itself when ready)
                 await loadProfilePage(profile);
                 
-                // Reset scroll and trigger fade-in animation
+                // Reset scroll
                 window.scrollTo(0, 0);
+                
+                // Trigger fade-in animation (page is already visible from loadProfilePage)
                 setTimeout(() => {
                     const profilePage = document.getElementById(`${profile.toLowerCase()}-page`);
                     if (profilePage) {
