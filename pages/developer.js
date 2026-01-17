@@ -523,13 +523,24 @@ function initializeCodeEditor() {
     
     // Add syntax highlighting - call after DOM is ready
     if (codeContent) {
-        // Try immediately
-        applySyntaxHighlighting();
+        // Syntax highlighting should never break interactions
+        try {
+            applySyntaxHighlighting();
+        } catch (e) {
+            console.warn('applySyntaxHighlighting failed (non-fatal):', e);
+        }
         // Also try after a delay to ensure everything is loaded
         setTimeout(() => {
-            applySyntaxHighlighting();
+            try {
+                applySyntaxHighlighting();
+            } catch (e) {
+                console.warn('applySyntaxHighlighting failed (non-fatal):', e);
+            }
         }, 200);
     }
+
+    // Bind delegated handlers once (survives DOM replacements)
+    bindCodeEditorDelegatedHandlers();
     
     // Expand/Collapse button
     if (expandBtn) {
@@ -543,7 +554,7 @@ function initializeCodeEditor() {
     if (codeEditor) {
         codeEditor.addEventListener('click', (e) => {
             // Don't expand if clicking on controls
-            if (e.target.closest('.code-editor-controls')) return;
+            if (e.target.closest('.code-editor-controls, .code-editor-control')) return;
             if (!codeEditorState.expanded) {
                 toggleCodeEditor();
             }
@@ -575,6 +586,46 @@ function initializeCodeEditor() {
             killExecution();
         });
     }
+}
+
+// Delegated click handlers so buttons keep working even if DOM is replaced.
+function bindCodeEditorDelegatedHandlers() {
+    if (window.__codeEditorDelegatedHandlersBound) return;
+    window.__codeEditorDelegatedHandlersBound = true;
+
+    document.addEventListener(
+        'click',
+        (e) => {
+            const target = e.target instanceof Element ? e.target : null;
+            if (!target) return;
+
+            const btn = target.closest('#expand-btn, #play-btn, #copy-btn, #kill-btn');
+            if (!btn) return;
+
+            // Ensure we only respond for the developer page editor
+            if (!document.getElementById('code-editor')) return;
+
+            // Prevent the "click anywhere to expand" handler from interfering
+            e.preventDefault();
+            e.stopPropagation();
+
+            switch (btn.id) {
+                case 'expand-btn':
+                    toggleCodeEditor();
+                    break;
+                case 'play-btn':
+                    if (!codeEditorState.running) runCode();
+                    break;
+                case 'copy-btn':
+                    copyCode();
+                    break;
+                case 'kill-btn':
+                    killExecution();
+                    break;
+            }
+        },
+        true // capture phase so we run even if something stops bubbling
+    );
 }
 
 // Toggle expand/collapse
