@@ -34,6 +34,20 @@ export function DeveloperContact() {
             <i className="fas fa-envelope"></i> Email Me
           </a>
         </div>
+        <div className="contact-info">
+          <div className="contact-item">
+            <i className="fas fa-envelope"></i>
+            <span>shashwatrajiitd@gmail.com</span>
+          </div>
+          <div className="contact-item">
+            <i className="fas fa-map-marker-alt"></i>
+            <span>Mumbai, Maharashtra</span>
+          </div>
+          <div className="contact-item">
+            <i className="fab fa-linkedin"></i>
+            <span>shashwatrajiitd</span>
+          </div>
+        </div>
       </div>
     </section>
   )
